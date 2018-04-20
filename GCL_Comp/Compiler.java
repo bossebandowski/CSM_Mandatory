@@ -110,7 +110,8 @@ public class Compiler {
 						System.out.println(aPG.output);
 						System.out.println("\n----------------------\n");
 						break; }
-			case "i": {	System.out.println("not yet implemented");
+			case "i": {	System.out.println("Interpreting...");
+						interpret.visit(parser.start());
 						break; }
 			case "a": { System.out.println("not yet implemented");
 						break; }
@@ -121,21 +122,21 @@ public class Compiler {
 	
 	public class ProgramGraph extends CompilerBaseVisitor<String> {
 
-		@Override public String visitStart(CompilerParser.StartContext ctx) {
+		public String visitStart(CompilerParser.StartContext ctx) {
 			aPG.nodeStash.add(new Node(-1));
 			aPG.nodeStash.add(new Node(-2));
 			
 			return visitChildren(ctx);}
-		@Override public String visitVarDef(CompilerParser.VarDefContext ctx) {
+		public String visitVarDef(CompilerParser.VarDefContext ctx) {
 			aPG.edgeStash.add(new Edge(aPG.nodeStash.pop(), aPG.nodeStash.peek(), new Label(String.valueOf(ctx.lhs.getText()) + " := " + String.valueOf(ctx.rhs.getText()))));
 			
 			return visitChildren(ctx); }
-		@Override public String visitAppend(CompilerParser.AppendContext ctx) {
+		public String visitAppend(CompilerParser.AppendContext ctx) {
 			aPG.nodeStash.add(aPG.nodeStash.size() - 1, new Node(aPG.nodeCount));
 			aPG.nodeCount++;
 			
 			return visitChildren(ctx); }
-		@Override public String visitDoLoop(CompilerParser.DoLoopContext ctx) {
+		public String visitDoLoop(CompilerParser.DoLoopContext ctx) {
 			aPG.ifNodeStash.push(aPG.nodeStash.pop());
 			aPG.doNodeStash.push(aPG.ifNodeStash.peek());
 			aPG.index.push(aPG.edgeStash.size());
@@ -146,202 +147,202 @@ public class Compiler {
 			aPG.edgeStash.add(new Edge(aPG.doNodeStash.pop(), aPG.nodeStash.peek(), done));
 			
 			return ""; }
-		@Override public String visitSkip(CompilerParser.SkipContext ctx) {
+		public String visitSkip(CompilerParser.SkipContext ctx) {
 			aPG.edgeStash.add(new Edge(aPG.nodeStash.pop(), aPG.nodeStash.peek(), new Label("Skip")));
 			
 			return visitChildren(ctx); }
-		@Override public String visitIf(CompilerParser.IfContext ctx) {
+		public String visitIf(CompilerParser.IfContext ctx) {
 			aPG.ifNodeStash.push(aPG.nodeStash.pop());
 			
 			return visitChildren(ctx); }
-		@Override public String visitIfElif(CompilerParser.IfElifContext ctx) {
+		public String visitIfElif(CompilerParser.IfElifContext ctx) {
 			aPG.ifNodeStash.push(aPG.ifNodeStash.peek());
 			
 			return visitChildren(ctx); }
-		@Override public String visitIfThen(CompilerParser.IfThenContext ctx) {
+		public String visitIfThen(CompilerParser.IfThenContext ctx) {
 			aPG.nodeStash.push(new Node(aPG.nodeCount));
 			aPG.nodeCount++;
 			aPG.edgeStash.add(new Edge(aPG.ifNodeStash.pop(), aPG.nodeStash.peek(), new Label(String.valueOf(ctx.lhs.getText()))));
 			
 			return visitChildren(ctx); }
-		@Override public String visitPlusExpr(CompilerParser.PlusExprContext ctx) {
+		public String visitPlusExpr(CompilerParser.PlusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitVar(CompilerParser.VarContext ctx) { 
+		public String visitVar(CompilerParser.VarContext ctx) { 
 			return visitChildren(ctx); }
-		@Override public String visitNum(CompilerParser.NumContext ctx) {
+		public String visitNum(CompilerParser.NumContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitPowExpr(CompilerParser.PowExprContext ctx) {
+		public String visitPowExpr(CompilerParser.PowExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNestedExpr(CompilerParser.NestedExprContext ctx) {
+		public String visitNestedExpr(CompilerParser.NestedExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitProdExpr(CompilerParser.ProdExprContext ctx) {
+		public String visitProdExpr(CompilerParser.ProdExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitUMinusExpr(CompilerParser.UMinusExprContext ctx) {
+		public String visitUMinusExpr(CompilerParser.UMinusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitMinusExpr(CompilerParser.MinusExprContext ctx) {
+		public String visitMinusExpr(CompilerParser.MinusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitOr(CompilerParser.OrContext ctx) {
+		public String visitOr(CompilerParser.OrContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitTrue(CompilerParser.TrueContext ctx) {
+		public String visitTrue(CompilerParser.TrueContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSmallerEqual(CompilerParser.SmallerEqualContext ctx) {
+		public String visitSmallerEqual(CompilerParser.SmallerEqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitFalse(CompilerParser.FalseContext ctx) {
+		public String visitFalse(CompilerParser.FalseContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitUnequal(CompilerParser.UnequalContext ctx) {
+		public String visitUnequal(CompilerParser.UnequalContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNeg(CompilerParser.NegContext ctx) {
+		public String visitNeg(CompilerParser.NegContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitGreaterEqual(CompilerParser.GreaterEqualContext ctx) {
+		public String visitGreaterEqual(CompilerParser.GreaterEqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitEqual(CompilerParser.EqualContext ctx) {
+		public String visitEqual(CompilerParser.EqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNestedBool(CompilerParser.NestedBoolContext ctx) {
+		public String visitNestedBool(CompilerParser.NestedBoolContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSCOr(CompilerParser.SCOrContext ctx) {
+		public String visitSCOr(CompilerParser.SCOrContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitAnd(CompilerParser.AndContext ctx) {
+		public String visitAnd(CompilerParser.AndContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSCAnd(CompilerParser.SCAndContext ctx) {
+		public String visitSCAnd(CompilerParser.SCAndContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitGreater(CompilerParser.GreaterContext ctx) {
+		public String visitGreater(CompilerParser.GreaterContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSmaller(CompilerParser.SmallerContext ctx) {
+		public String visitSmaller(CompilerParser.SmallerContext ctx) {
 			return visitChildren(ctx); }
 	}
 	
 	public class Parse extends CompilerBaseVisitor<String> {
 
-		@Override public String visitStart(CompilerParser.StartContext ctx) {
+		public String visitStart(CompilerParser.StartContext ctx) {
 			return visitChildren(ctx);}
-		@Override public String visitVarDef(CompilerParser.VarDefContext ctx) {
+		public String visitVarDef(CompilerParser.VarDefContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitAppend(CompilerParser.AppendContext ctx) {
+		public String visitAppend(CompilerParser.AppendContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitDoLoop(CompilerParser.DoLoopContext ctx) {
+		public String visitDoLoop(CompilerParser.DoLoopContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSkip(CompilerParser.SkipContext ctx) {
+		public String visitSkip(CompilerParser.SkipContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitIf(CompilerParser.IfContext ctx) {
+		public String visitIf(CompilerParser.IfContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitIfElif(CompilerParser.IfElifContext ctx) {
+		public String visitIfElif(CompilerParser.IfElifContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitIfThen(CompilerParser.IfThenContext ctx) {
+		public String visitIfThen(CompilerParser.IfThenContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitPlusExpr(CompilerParser.PlusExprContext ctx) {
+		public String visitPlusExpr(CompilerParser.PlusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitVar(CompilerParser.VarContext ctx) { 
+		public String visitVar(CompilerParser.VarContext ctx) { 
 			return visitChildren(ctx); }
-		@Override public String visitNum(CompilerParser.NumContext ctx) {
+		public String visitNum(CompilerParser.NumContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitPowExpr(CompilerParser.PowExprContext ctx) {
+		public String visitPowExpr(CompilerParser.PowExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNestedExpr(CompilerParser.NestedExprContext ctx) {
+		public String visitNestedExpr(CompilerParser.NestedExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitProdExpr(CompilerParser.ProdExprContext ctx) {
+		public String visitProdExpr(CompilerParser.ProdExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitUMinusExpr(CompilerParser.UMinusExprContext ctx) {
+		public String visitUMinusExpr(CompilerParser.UMinusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitMinusExpr(CompilerParser.MinusExprContext ctx) {
+		public String visitMinusExpr(CompilerParser.MinusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitOr(CompilerParser.OrContext ctx) {
+		public String visitOr(CompilerParser.OrContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitTrue(CompilerParser.TrueContext ctx) {
+		public String visitTrue(CompilerParser.TrueContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSmallerEqual(CompilerParser.SmallerEqualContext ctx) {
+		public String visitSmallerEqual(CompilerParser.SmallerEqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitFalse(CompilerParser.FalseContext ctx) {
+		public String visitFalse(CompilerParser.FalseContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitUnequal(CompilerParser.UnequalContext ctx) {
+		public String visitUnequal(CompilerParser.UnequalContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNeg(CompilerParser.NegContext ctx) {
+		public String visitNeg(CompilerParser.NegContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitGreaterEqual(CompilerParser.GreaterEqualContext ctx) {
+		public String visitGreaterEqual(CompilerParser.GreaterEqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitEqual(CompilerParser.EqualContext ctx) {
+		public String visitEqual(CompilerParser.EqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNestedBool(CompilerParser.NestedBoolContext ctx) {
+		public String visitNestedBool(CompilerParser.NestedBoolContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSCOr(CompilerParser.SCOrContext ctx) {
+		public String visitSCOr(CompilerParser.SCOrContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitAnd(CompilerParser.AndContext ctx) {
+		public String visitAnd(CompilerParser.AndContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSCAnd(CompilerParser.SCAndContext ctx) {
+		public String visitSCAnd(CompilerParser.SCAndContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitGreater(CompilerParser.GreaterContext ctx) {
+		public String visitGreater(CompilerParser.GreaterContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSmaller(CompilerParser.SmallerContext ctx) {
+		public String visitSmaller(CompilerParser.SmallerContext ctx) {
 			return visitChildren(ctx); }
 	}
 
 	public class Interpret extends CompilerBaseVisitor<String> {
 
-		@Override public String visitStart(CompilerParser.StartContext ctx) {
+		public String visitStart(CompilerParser.StartContext ctx) {
 			return visitChildren(ctx);}
-		@Override public String visitVarDef(CompilerParser.VarDefContext ctx) {
+		public String visitVarDef(CompilerParser.VarDefContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitAppend(CompilerParser.AppendContext ctx) {
+		public String visitAppend(CompilerParser.AppendContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitDoLoop(CompilerParser.DoLoopContext ctx) {
+		public String visitDoLoop(CompilerParser.DoLoopContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSkip(CompilerParser.SkipContext ctx) {
+		public String visitSkip(CompilerParser.SkipContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitIf(CompilerParser.IfContext ctx) {
+		public String visitIf(CompilerParser.IfContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitIfElif(CompilerParser.IfElifContext ctx) {
+		public String visitIfElif(CompilerParser.IfElifContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitIfThen(CompilerParser.IfThenContext ctx) {
+		public String visitIfThen(CompilerParser.IfThenContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitPlusExpr(CompilerParser.PlusExprContext ctx) {
+		public String visitPlusExpr(CompilerParser.PlusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitVar(CompilerParser.VarContext ctx) { 
+		public String visitVar(CompilerParser.VarContext ctx) { 
 			return visitChildren(ctx); }
-		@Override public String visitNum(CompilerParser.NumContext ctx) {
+		public String visitNum(CompilerParser.NumContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitPowExpr(CompilerParser.PowExprContext ctx) {
+		public String visitPowExpr(CompilerParser.PowExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNestedExpr(CompilerParser.NestedExprContext ctx) {
+		public String visitNestedExpr(CompilerParser.NestedExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitProdExpr(CompilerParser.ProdExprContext ctx) {
+		public String visitProdExpr(CompilerParser.ProdExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitUMinusExpr(CompilerParser.UMinusExprContext ctx) {
+		public String visitUMinusExpr(CompilerParser.UMinusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitMinusExpr(CompilerParser.MinusExprContext ctx) {
+		public String visitMinusExpr(CompilerParser.MinusExprContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitOr(CompilerParser.OrContext ctx) {
+		public String visitOr(CompilerParser.OrContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitTrue(CompilerParser.TrueContext ctx) {
+		public String visitTrue(CompilerParser.TrueContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSmallerEqual(CompilerParser.SmallerEqualContext ctx) {
+		public String visitSmallerEqual(CompilerParser.SmallerEqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitFalse(CompilerParser.FalseContext ctx) {
+		public String visitFalse(CompilerParser.FalseContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitUnequal(CompilerParser.UnequalContext ctx) {
+		public String visitUnequal(CompilerParser.UnequalContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNeg(CompilerParser.NegContext ctx) {
+		public String visitNeg(CompilerParser.NegContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitGreaterEqual(CompilerParser.GreaterEqualContext ctx) {
+		public String visitGreaterEqual(CompilerParser.GreaterEqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitEqual(CompilerParser.EqualContext ctx) {
+		public String visitEqual(CompilerParser.EqualContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitNestedBool(CompilerParser.NestedBoolContext ctx) {
+		public String visitNestedBool(CompilerParser.NestedBoolContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSCOr(CompilerParser.SCOrContext ctx) {
+		public String visitSCOr(CompilerParser.SCOrContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitAnd(CompilerParser.AndContext ctx) {
+		public String visitAnd(CompilerParser.AndContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSCAnd(CompilerParser.SCAndContext ctx) {
+		public String visitSCAnd(CompilerParser.SCAndContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitGreater(CompilerParser.GreaterContext ctx) {
+		public String visitGreater(CompilerParser.GreaterContext ctx) {
 			return visitChildren(ctx); }
-		@Override public String visitSmaller(CompilerParser.SmallerContext ctx) {
+		public String visitSmaller(CompilerParser.SmallerContext ctx) {
 			return visitChildren(ctx); }
 	}
 
 	// This class is used to throw the correct exception
 	public class BailErrorStrategy extends DefaultErrorStrategy {
 		
-	    @Override
+	    
 	    public void recover(Parser recognizer, RecognitionException e) {
 			for (ParserRuleContext context = recognizer.getContext(); context != null; context = context.getParent()) {
 				context.exception = e;
@@ -350,7 +351,7 @@ public class Compiler {
 	        throw new ParseCancellationException(e);
 	    }
 
-	    @Override
+	    
 	    public Token recoverInline(Parser recognizer)
 	        throws RecognitionException
 	    {
@@ -362,7 +363,7 @@ public class Compiler {
 	        throw new ParseCancellationException(e);
 	    }
 
-	    @Override
+	    
 	    public void sync(Parser recognizer) { }
 	}
 }
