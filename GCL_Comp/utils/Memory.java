@@ -52,8 +52,9 @@ public class Memory {
 	
 	public void defUnknownVars (Label label) {
 		for (String c : label.getChars()) {
-			if (!(isInt(c) || isOp(c)) || this.contains(c)) {
-					this.setVarVal(c, 0);
+			if (!(isInt(c) | isOp(c)) | this.contains(c)) {
+				System.out.println(this.contains(c));
+				this.setVarVal(c, 0);
 			}
 		}
 	}
@@ -89,7 +90,6 @@ public class Memory {
 	public void convertToInts (LinkedList<String> chars) {
 		for (String c : chars) {
 			if (!(isInt(c) || isOp(c))) {
-				System.out.println("this is working");
 				String newc = String.valueOf(this.getVarVal(c));
 				int index = chars.indexOf(c);
 				chars.set(index, newc);
@@ -98,16 +98,12 @@ public class Memory {
 	}
 	
 	public void updateMem (Label label) throws ScriptException {
-		System.out.println("updateMem");
 		Label labelCopy = label.copy();
-		System.out.println(labelCopy);
 		String key = labelCopy.getChars().pop();
-		System.out.println(key);
 		labelCopy.getChars().pop();
 		this.defUnknownVars(labelCopy);
 		convertToInts(labelCopy.getChars());
 		String rhs = labelCopy.toString();
-		System.out.println(rhs);
 		ScriptEngineManager mgr = new ScriptEngineManager();
 	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
 		this.setVarVal(key, (int) engine.eval(rhs));

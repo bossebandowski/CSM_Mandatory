@@ -379,7 +379,7 @@ public class Compiler {
 				
 			}
 		} else if (currentEdge.label.getType().equals("vardef")) {
-			System.out.println("vardef");
+			System.out.println(this.aMemory.toString());
 			mem.updateMem(currentEdge.label);
 			if (currentEdge.to.number == -2) {
 				finishInterpret(1);
