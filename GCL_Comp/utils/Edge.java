@@ -12,6 +12,6 @@ public class Edge {
 	}
 	
 	public String toString() {
-		return from.toString() + " -> " + to.toString() + " [label = \"" + this.label.label + "\"];\n";
+		return from.toString() + " -> " + to.toString() + " [label = \"" + this.label.toString() + "\"];\n";
 	}
 }
